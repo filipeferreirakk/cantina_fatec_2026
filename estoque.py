@@ -22,7 +22,6 @@ class FilaEstoque:
 
     def inserir_no_estoque(self, novo_produto):
         nova_caixinha = No(novo_produto)
-
         if self.primeiro is None:
             self.primeiro = nova_caixinha
             self.ultimo = nova_caixinha
@@ -31,13 +30,43 @@ class FilaEstoque:
             self.ultimo = nova_caixinha
         print(f"Sucesso: {novo_produto.nome} entrou no estoque!")
 
-    def mostrar_estoque(self):
+    def editar_quantidade_por_nome(self, nome_busca, nova_qtd):
+        atual = self.primeiro
+        encontrou = False
+
+        while atual is not None:
+            if atual.produto.nome == nome_busca:
+                atual.produto.alterar_estoque(nova_qtd)
+                print(f"Pronto! Agora temos {nova_qtd} de {nome_busca}.")
+                encontrou = True
+                break
+            atual = atual.proximo
+        
+        if not encontrou:
+            print(f"Não achei '{nome_busca}' no estoque.")
+
+    def baixar_estoque(self, nome_busca, qtd_vendida):
         atual = self.primeiro
         
+        while atual is not None:
+            if atual.produto.nome == nome_busca:
+                if atual.produto.quantidade >= qtd_vendida:
+                    atual.produto.quantidade -= qtd_vendida
+                    print(f"Venda feita! Saíram {qtd_vendida} de {nome_busca}.")
+                    return True
+                else:
+                    print(f"Erro: Só temos {atual.produto.quantidade} de {nome_busca}!")
+                    return False
+            atual = atual.proximo
+        
+        print("Produto não encontrado para venda.")
+        return False
+
+    def mostrar_estoque(self):
+        atual = self.primeiro
         if atual is None:
             print("O estoque está totalmente vazio!")
             return
-
         print("\n--- LISTA DE PRODUTOS NO ESTOQUE ---")
         while atual is not None:
             p = atual.produto
@@ -45,15 +74,8 @@ class FilaEstoque:
             atual = atual.proximo
 
 minha_cantina = FilaEstoque()
-
-item1 = Produto("Coxinha", 4.00, 8.00, "23/03/2026", "25/03/2026", 10)
-item2 = Produto("Suco de Laranja", 3.00, 6.00, "23/03/2026", "24/03/2026", 5)
-
-minha_cantina.inserir_no_estoque(item1)
-minha_cantina.inserir_no_estoque(item2)
-
-minha_cantina.mostrar_estoque()
-
-item1.alterar_estoque(8)
-print("Ajustando estoque da Coxinha...")
+minha_cantina.inserir_no_estoque(Produto("Coxinha", 4.0, 8.0, "23/03", "25/03", 10))
+minha_cantina.inserir_no_estoque(Produto("Suco", 3.0, 6.0, "23/03", "24/03", 5))
+minha_cantina.editar_quantidade_por_nome("Coxinha", 15)
+minha_cantina.baixar_estoque("Suco", 2)
 minha_cantina.mostrar_estoque()
