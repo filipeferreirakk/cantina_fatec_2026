@@ -75,26 +75,30 @@ def menu():
                 estoque.inserir_no_estoque(novo)
                 print(f"\n{Cores.VERDE}✅ Produto cadastrado!{Cores.RESET}")
             except ValueError:
-                print(f"\n{Cores.VERMELHO}❌ Erro: Insira valores válidos.{Cores.RESET}")
+                print(f"\n{Cores.VERMELHO}❌ Erro: Entrada inválida. Preços e quantidades devem ser números.{Cores.RESET}")
             input(f"\n{Cores.AMARELO}Pressione ENTER para voltar...{Cores.RESET}")
 
         elif opcao == "3":
             limpar_tela()
             print(f"{Cores.AMARELO}--- REALIZAR VENDA ---{Cores.RESET}")
-            prod_nome = input("Produto: ")
-            qtd_venda = int(input("Quantidade: "))
-            if estoque.baixar_estoque(prod_nome, qtd_venda):
-                cliente = input("Nome do Cliente: ")
-                curso = input("Curso (IA/ESG): ")
-                v_total = float(input("Valor Total R$: "))
-                agora = datetime.now()
-                p = Pagamento(cliente, "aluno", curso, v_total, agora.strftime("%d/%m/%Y"), agora.strftime("%H:%M"))
-                v = Venda(cliente, prod_nome, qtd_venda, v_total, agora.strftime("%d/%m/%Y %H:%M"))
-                caixa.anotar_pagamento(p)
-                historico.registrar_nova_venda(v)
-                print(f"\n{Cores.VERDE}✅ Venda concluída!{Cores.RESET}")
-            else:
-                print(f"\n{Cores.VERMELHO}❌ Erro: Estoque insuficiente.{Cores.RESET}")
+            try:
+                prod_nome = input("Produto: ")
+                qtd_venda = int(input("Quantidade: "))
+                
+                if estoque.baixar_estoque(prod_nome, qtd_venda):
+                    cliente = input("Nome do Cliente: ")
+                    curso = input("Curso (IA/ESG): ")
+                    v_total = float(input("Valor Total R$: "))
+                    agora = datetime.now()
+                    p = Pagamento(cliente, "aluno", curso, v_total, agora.strftime("%d/%m/%Y"), agora.strftime("%H:%M"))
+                    v = Venda(cliente, prod_nome, qtd_venda, v_total, agora.strftime("%d/%m/%Y %H:%M"))
+                    caixa.anotar_pagamento(p)
+                    historico.registrar_nova_venda(v)
+                    print(f"\n{Cores.VERDE}✅ Venda concluída!{Cores.RESET}")
+                else:
+                    print(f"\n{Cores.VERMELHO}❌ Erro: Estoque insuficiente ou produto não encontrado.{Cores.RESET}")
+            except ValueError:
+                print(f"\n{Cores.VERMELHO}❌ Erro: Você deve digitar números válidos para quantidade e valor!{Cores.RESET}")
             input(f"\n{Cores.AMARELO}Pressione ENTER para voltar...{Cores.RESET}")
 
         elif opcao == "4":
