@@ -117,11 +117,16 @@ def menu():
             d = secretaria.carregar_sistema("dados.dat")
             if d:
                 estoque, caixa, historico = d["e"], d["c"], d["h"]
-                print(f"\n{Cores.VERDE}✅ Dados restaurados!{Cores.RESET}")
+                print(f"\n{Cores.VERDE}✅ Dados restaurados com sucesso!{Cores.RESET}")
             input(f"\n{Cores.AMARELO}Pressione ENTER para voltar...{Cores.RESET}")
 
         elif opcao == "0":
+            print(f"\n{Cores.AMARELO}Encerrando sistema...{Cores.RESET}")
             break
+        
+        else:
+            print(f"\n{Cores.VERMELHO}❌ Opção inválida! Tente novamente.{Cores.RESET}")
+            input(f"Pressione ENTER para continuar...")
 
 if __name__ == "__main__":
     menu()
