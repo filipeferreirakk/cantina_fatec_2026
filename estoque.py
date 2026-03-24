@@ -1,81 +1,99 @@
 class Produto:
     def __init__(self, nome, preco_compra, preco_venda, data_compra, data_vencimento, quantidade):
-        self.nome = nome
-        self.preco_compra = preco_compra
-        self.preco_venda = preco_venda
-        self.data_compra = data_compra
-        self.data_vencimento = data_vencimento
-        self.quantidade = quantidade
+        self.__nome = nome
+        self.__preco_compra = preco_compra
+        self.__preco_venda = preco_venda
+        self.__data_compra = data_compra
+        self.__data_vencimento = data_vencimento
+        self.__quantidade = quantidade
 
-    def alterar_estoque(self, nova_quantidade):
-        self.quantidade = nova_quantidade
+    @property
+    def nome(self):
+        return self.__nome
+
+    @property
+    def preco_compra(self):
+        return self.__preco_compra
+
+    @property
+    def preco_venda(self):
+        return self.__preco_venda
+
+    @property
+    def data_compra(self):
+        return self.__data_compra
+
+    @property
+    def data_vencimento(self):
+        return self.__data_vencimento
+
+    @property
+    def quantidade(self):
+        return self.__quantidade
+
+    @quantidade.setter
+    def quantidade(self, nova_qtd):
+        if nova_qtd >= 0:
+            self.__quantidade = nova_qtd
+        else:
+            print("Erro: A quantidade não pode ser negativa.")
 
 class No:
     def __init__(self, produto):
-        self.produto = produto
-        self.proximo = None
+        self.__produto = produto
+        self.__proximo = None
+
+    @property
+    def produto(self):
+        return self.__produto
+
+    @property
+    def proximo(self):
+        return self.__proximo
+
+    @proximo.setter
+    def proximo(self, valor):
+        self.__proximo = valor
 
 class FilaEstoque:
     def __init__(self):
-        self.primeiro = None 
-        self.ultimo = None
+        self.__primeiro = None 
+        self.__ultimo = None
 
     def inserir_no_estoque(self, novo_produto):
         nova_caixinha = No(novo_produto)
-        if self.primeiro is None:
-            self.primeiro = nova_caixinha
-            self.ultimo = nova_caixinha
+        if self.__primeiro is None:
+            self.__primeiro = nova_caixinha
+            self.__ultimo = nova_caixinha
         else:
-            self.ultimo.proximo = nova_caixinha
-            self.ultimo = nova_caixinha
-        print(f"Sucesso: {novo_produto.nome} entrou no estoque!")
-
-    def editar_quantidade_por_nome(self, nome_busca, nova_qtd):
-        atual = self.primeiro
-        encontrou = False
-
-        while atual is not None:
-            if atual.produto.nome == nome_busca:
-                atual.produto.alterar_estoque(nova_qtd)
-                print(f"Pronto! Agora temos {nova_qtd} de {nome_busca}.")
-                encontrou = True
-                break
-            atual = atual.proximo
-        
-        if not encontrou:
-            print(f"Não achei '{nome_busca}' no estoque.")
+            self.__ultimo.proximo = nova_caixinha
+            self.__ultimo = nova_caixinha
 
     def baixar_estoque(self, nome_busca, qtd_vendida):
-        atual = self.primeiro
+        atual = self.__primeiro
         
         while atual is not None:
             if atual.produto.nome == nome_busca:
                 if atual.produto.quantidade >= qtd_vendida:
                     atual.produto.quantidade -= qtd_vendida
-                    print(f"Venda feita! Saíram {qtd_vendida} de {nome_busca}.")
                     return True
                 else:
-                    print(f"Erro: Só temos {atual.produto.quantidade} de {nome_busca}!")
                     return False
             atual = atual.proximo
-        
-        print("Produto não encontrado para venda.")
         return False
 
     def mostrar_estoque(self):
-        atual = self.primeiro
+        atual = self.__primeiro
         if atual is None:
-            print("O estoque está totalmente vazio!")
+            print("\n[ESTOQUE] Vazio.")
             return
-        print("\n--- LISTA DE PRODUTOS NO ESTOQUE ---")
+
+        print("\n--- STATUS ATUAL DO ESTOQUE ---")
         while atual is not None:
             p = atual.produto
-            print(f"Nome: {p.nome} | Qtd: {p.quantidade} | Vencimento: {p.data_vencimento}")
+            print(f"Produto: {p.nome:15} | Qtd: {p.quantidade:3} | Vence: {p.data_vencimento}")
             atual = atual.proximo
 
-minha_cantina = FilaEstoque()
-minha_cantina.inserir_no_estoque(Produto("Coxinha", 4.0, 8.0, "23/03", "25/03", 10))
-minha_cantina.inserir_no_estoque(Produto("Suco", 3.0, 6.0, "23/03", "24/03", 5))
-minha_cantina.editar_quantidade_por_nome("Coxinha", 15)
-minha_cantina.baixar_estoque("Suco", 2)
-minha_cantina.mostrar_estoque()
+    @property
+    def primeiro(self):
+        return self.__primeiro
